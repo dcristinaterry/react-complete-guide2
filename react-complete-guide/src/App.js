@@ -28,8 +28,20 @@ class App extends Component {
     this.setState({ persons: [{ name: data, age: "28" }, { name: data, age: "32" }] });
   }
 
-  nameChangeHandler = (event) => {
-    this.setState({ persons: [{ name: event.target.value, age: "28" }, { name: "ana", age: "320" }] });
+  nameChangeHandler = (event, id) => {
+    const personIndex = this.state.persons.find(p => {
+      return p.id ===id;
+    });
+
+    const person = {... this.state.persons[personIndex]}
+    // other way to create a copy without spread operators would be with Object.assign({}, this.state.persons[personIndex])
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons]
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
 
   }
 
@@ -46,6 +58,7 @@ class App extends Component {
 
       // 1. const persons = this.state.persons.slice();
       // 2.:
+
       const persons = [...this.state.persons];
       persons.splice(peronsIndex,1);
       this.setState({persons:person})
@@ -77,6 +90,7 @@ class App extends Component {
                 click = {this.deletePersonHandler.bind(this, index)}
                 name ={person.name}
                 age={person.age}
+                changed={()=>this.nameChangeHandler(event, id)}
             />
           })}
           {/* This way still hardcoded, so instead of accessing each element of the state we would want to use a map */}
