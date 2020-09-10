@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import React, { useState } from 'react';
 import './App.css';
 import Person from './Person/Person'
-import person from './Person/Person';
+
 
 
 // **************************************************************
@@ -11,7 +11,7 @@ import person from './Person/Person';
 // 
 class App extends Component {
   // this will show the same output but using the state property, if the state values are change the page will get re-render
-  state = { persons: [{ name: "max", age: "28", id:"1" }, { name: "manu", age: "30", id="2"}], otherAttribute: "something", showPersons:false }
+  state = { persons: [{ name: "max", age: "28", id: 1 }, { name: "manu", age: "30", id: 2 }], otherAttribute: "something", showPersons: false }
 
   // when assinging a method it becomes a function, it will be a property that witholds a function
   switchNameHandler1 = () => {
@@ -29,41 +29,45 @@ class App extends Component {
   }
 
   nameChangeHandler = (event, id) => {
-    const personIndex = this.state.persons.find(p => {
-      return p.id ===id;
+    const personIndex = this.state.persons.findIndex(p => {
+      console.log("finding PersonIndex id", id);
+      return p.id === id;
     });
+    console.log("finding PersonIndex id",personIndex );
 
-    const person = {... this.state.persons[personIndex]}
+    const person = { ...this.state.persons[personIndex] }
+    console.log("new Person", person);
     // other way to create a copy without spread operators would be with Object.assign({}, this.state.persons[personIndex])
 
     person.name = event.target.value;
+    console.log("entry", event.target.value);
 
     const persons = [...this.state.persons]
     persons[personIndex] = person;
 
-    this.setState({persons: persons});
+    this.setState({ persons: persons });
 
   }
 
-  togglePersonHandler = ()=>{
-      const doesShow = this.state.showPersons;
-      this.setState({showPersons: !doesShow})
-   }
+  togglePersonHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow })
+  }
 
-   deletePersonHandler = ()=>{
+  deletePersonHandler = (peronsIndex) => {
     //  this is a bad practice! remember.  this will only make another pointer to the same object and lead to errors along the way.  the state should be updated with unmutable objects.
-      // const persons = this.state.persons;
+    // const persons = this.state.persons;
 
-      // this is another the best approach  with slice or with spread operators which are more commun 
+    // this is another the best approach  with slice or with spread operators which are more commun 
 
-      // 1. const persons = this.state.persons.slice();
-      // 2.:
+    // 1. const persons = this.state.persons.slice();
+    // 2.:
+    const persons = [...this.state.persons];
 
-      const persons = [...this.state.persons];
-      persons.splice(peronsIndex,1);
-      this.setState({persons:person})
+    persons.splice(peronsIndex, 1);
+    this.setState({ persons: persons })
 
-   }
+  }
 
   render() {
 
@@ -75,23 +79,20 @@ class App extends Component {
       cursor: 'pointer'
     }
 
-    let persons =  null;
+    let persons = null;
 
-    if(this.state.showPersons){
+    if (this.state.showPersons) {
       persons = (
 
         <div>
 
-          {this.state.persons.map((person, index )=> {
-
-            return 
-            <Person
-                key={person.id}
-                click = {this.deletePersonHandler.bind(this, index)}
-                name ={person.name}
-                age={person.age}
-                changed={()=>this.nameChangeHandler(event, id)}
-            />
+          {this.state.persons.map((person, index) => {
+            return <Person
+              key={person.id}
+              click={this.deletePersonHandler.bind(this, index)}
+              name={person.name}
+              age={person.age}
+              changed={(event) => this.nameChangeHandler(event, person.id)} />
           })}
           {/* This way still hardcoded, so instead of accessing each element of the state we would want to use a map */}
           {/* <Person
@@ -109,10 +110,10 @@ class App extends Component {
             // click={this.switchNameHandler}
             click={this.switchNameHandler.bind(this, 'max!!!!!!!!!!!!!')}
             changed={this.nameChangeHandler} */}
-          />  
+          {/* />   */}
 
         </div>
-       
+
       );
     }
 
@@ -127,10 +128,14 @@ class App extends Component {
         <button
           style={style}
           // onClick={this.switchNameHandler.bind(this, "brad")}
-          onClick={this.togglePersonHandler}
-          >Swithch Name
-          
-          </button>
+          onClick={this.togglePersonHandler}>
+          Swithch Name
+        </button>
+
+        {/* !!!!Another way of dynamicaly adding conditions keeping the code cleaner since ternary conditions can get messy !!!!!*/}
+        {persons}
+
+
 
         {/* another sintax is with arrow functions.  this way is not highly recommended because of perfomance. it can be inneficient, the bind sintax will be better*/}
         {/* <button onClick={()=>this.switchNameHandler.bind("brad")}>Swithch Name</button> */}
@@ -141,7 +146,7 @@ class App extends Component {
         Hard Coded Way of adding elements:
         /////////////////////////////////////////
         */}
-        
+
         {/* <div>
           <Person
             name={this.state.persons[0].name}
@@ -162,7 +167,7 @@ class App extends Component {
 
         </div> */}
 
-         
+
         {/*  
         /////////////////////////////////////////
         Dynamic way with ternary conditions:
@@ -192,8 +197,7 @@ class App extends Component {
         </div> : null
         } */}
 
-        {/* !!!!Another way of dynamicaly adding conditions keeping the code cleaner since ternary conditions can get messy !!!!!*/}
-        {persons}
+
 
       </div>
     );
