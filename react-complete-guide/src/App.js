@@ -39,12 +39,14 @@ class App extends Component {
    }
 
    deletePersonHandler = ()=>{
-    //  this is a bad practice! remember.  this will only make another pointer to the same object
+    //  this is a bad practice! remember.  this will only make another pointer to the same object and lead to errors along the way.  the state should be updated with unmutable objects.
       // const persons = this.state.persons;
 
-      // this is the best approach 
+      // this is another the best approach  with slice or with spread operators which are more commun 
 
-      const persons = this.state.persons.slice();
+      // 1. const persons = this.state.persons.slice();
+      // 2.:
+      const persons = [...this.state.persons];
       persons.splice(peronsIndex,1);
       this.setState({persons:person})
 
