@@ -11,7 +11,7 @@ import person from './Person/Person';
 // 
 class App extends Component {
   // this will show the same output but using the state property, if the state values are change the page will get re-render
-  state = { persons: [{ name: "max", age: "28", }, { name: "manu", age: "30", }], otherAttribute: "something", showPersons:false }
+  state = { persons: [{ name: "max", age: "28", id:"1" }, { name: "manu", age: "30", id="2"}], otherAttribute: "something", showPersons:false }
 
   // when assinging a method it becomes a function, it will be a property that witholds a function
   switchNameHandler1 = () => {
@@ -73,6 +73,7 @@ class App extends Component {
 
             return 
             <Person
+                key={person.id}
                 click = {this.deletePersonHandler.bind(this, index)}
                 name ={person.name}
                 age={person.age}
