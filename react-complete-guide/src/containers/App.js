@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 // import React, { useState } from 'react';
 import './App.css';
-import Person from './Person/Person'
-
-
+import Person from '../components/Persons/Person/'
 
 // **************************************************************
 // OLD WAY of creating components:
