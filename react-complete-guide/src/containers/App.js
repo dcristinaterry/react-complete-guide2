@@ -1,7 +1,34 @@
 import React, { Component } from 'react';
 // import React, { useState } from 'react';
 import './App.css';
-import Person from '../components/Persons/Person/'
+// import Radium, { StyleRoot } from 'radium'
+import styled from 'styled-components'
+
+
+// since we are no longer using person but persons, we must modify the import
+// import Person from '../components/Persons/Person/Person'
+
+import Persons from '../components/Persons/Persons'
+
+
+
+const StyledButton = styled.button`
+
+  // background-color: green;
+  background-color: ${props => props.alt ? 'red' : 'green'};
+  color: white;
+  font: inherit;
+  border: 1px solid blue;
+  padding: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+    color: black;
+  }
+
+
+`
+
 
 // **************************************************************
 // OLD WAY of creating components:
@@ -9,7 +36,13 @@ import Person from '../components/Persons/Person/'
 // 
 class App extends Component {
   // this will show the same output but using the state property, if the state values are change the page will get re-render
-  state = { persons: [{ name: "max", age: "28", id: 1 }, { name: "manu", age: "30", id: 2 }], otherAttribute: "something", showPersons: false }
+  state = {
+    persons: [
+      { name: "max", age: "28", id: 1 },
+      { name: "manu", age: "30", id: 2 }],
+    otherAttribute: "something",
+    showPersons: false
+  }
 
   // when assinging a method it becomes a function, it will be a property that witholds a function
   switchNameHandler1 = () => {
@@ -31,7 +64,7 @@ class App extends Component {
       console.log("finding PersonIndex id", id);
       return p.id === id;
     });
-    console.log("finding PersonIndex id",personIndex );
+    console.log("finding PersonIndex id", personIndex);
 
     const person = { ...this.state.persons[personIndex] }
     console.log("new Person", person);
@@ -69,29 +102,49 @@ class App extends Component {
 
   render() {
 
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    }
 
+    // const style = {
+    //   backgroundColor: 'green',
+    //   font: 'inherit',
+    //   border: '1px solid blue',
+    //   padding: '8px',
+    //   cursor: 'pointer',
+    //   ':hover': {
+    //     backgroundColor: 'lightgreen',
+    //     color: 'black'
+    //   }
+    // }
+
+ 
     let persons = null;
 
     if (this.state.showPersons) {
+
       persons = (
-
         <div>
+          {/* changing the component to have the code more un-coupled and cleaner */}
 
-          {this.state.persons.map((person, index) => {
+          <Persons
+
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangeHandler}
+          />
+
+          {/* we removed the map function here to added to PERSONS and clean the code even more */}
+          {/* {this.state.persons.map((person, index) => {
+
+
             return <Person
               key={person.id}
               click={this.deletePersonHandler.bind(this, index)}
               name={person.name}
               age={person.age}
               changed={(event) => this.nameChangeHandler(event, person.id)} />
-          })}
+          })} */}
+
+
+
           {/* This way still hardcoded, so instead of accessing each element of the state we would want to use a map */}
           {/* <Person
             name={this.state.persons[0].name}
@@ -113,39 +166,62 @@ class App extends Component {
         </div>
 
       );
+
+      // style.backgroundColor = 'red';
+      // style[':hover'] = {
+      //   ':hover': {
+      //     backgroundColor: 'lightred',
+      //     color: 'black'
+      //   }
+      // }
+
+    }
+
+    // let classes = ['red', 'bold'].join(' ');
+    const classes = [];
+    if (this.state.persons.length < 2) {
+      classes.push('red');
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
     }
 
     return (
-      <div className="App">
+      // StyleRoot it's a component of Radium to wrap all my component so I can allow the use of media queries
+      // <StyleRoot>
+        <div className="App" >
 
-        <h1>Hi, I'm a react APP</h1>
-        <p>This is really working!</p>
+          <h1>Hi, I'm a react APP</h1>
+          <p className={classes.join(' ')}>This is really working!</p>
 
-        {/* adding event handler */}
-        {/* when assinging the handler do not use () in the end, other wise it will execute the function immediately.  we just want to pass a reference to the function */}
-        <button
-          style={style}
-          // onClick={this.switchNameHandler.bind(this, "brad")}
-          onClick={this.togglePersonHandler}>
-          Swithch Name
-        </button>
+          {/* adding event handler */}
+          {/* when assinging the handler do not use () in the end, other wise it will execute the function immediately.  we just want to pass a reference to the function */}
+         
+         <StyledButton alt ={this.state.showPersons} onClick={this.togglePersonHandler}>
+          {/* <button
+            // style={style}
+            // onClick={this.switchNameHandler.bind(this, "brad")} */}
+            {/* onClick={this.togglePersonHandler}> */}
+            Toggle Name
+        {/* </button> */}
+        </StyledButton>
 
-        {/* !!!!Another way of dynamicaly adding conditions keeping the code cleaner since ternary conditions can get messy !!!!!*/}
-        {persons}
-
-
-
-        {/* another sintax is with arrow functions.  this way is not highly recommended because of perfomance. it can be inneficient, the bind sintax will be better*/}
-        {/* <button onClick={()=>this.switchNameHandler.bind("brad")}>Swithch Name</button> */}
+          {/* !!!!Another way of dynamicaly adding conditions keeping the code cleaner since ternary conditions can get messy accessing the hook !!!!!*/}
+          {persons}
 
 
-        {/*  
+
+          {/* another sintax is with arrow functions.  this way is not highly recommended because of perfomance. it can be inneficient, the bind sintax will be better*/}
+          {/* <button onClick={()=>this.switchNameHandler.bind("brad")}>Swithch Name</button> */}
+
+
+          {/*  
         /////////////////////////////////////////
         Hard Coded Way of adding elements:
         /////////////////////////////////////////
         */}
 
-        {/* <div>
+          {/* <div>
           <Person
             name={this.state.persons[0].name}
             age={this.state.persons[0].age}
@@ -166,13 +242,13 @@ class App extends Component {
         </div> */}
 
 
-        {/*  
+          {/*  
         /////////////////////////////////////////
         Dynamic way with ternary conditions:
         /////////////////////////////////////////
         */}
 
-        {/* { this.state.showPersons ? 
+          {/* { this.state.showPersons ? 
         
         <div>
           <Person
@@ -197,7 +273,8 @@ class App extends Component {
 
 
 
-      </div>
+        </div>
+      // {/* </StyleRoot> */}
     );
   }
 }
@@ -245,5 +322,7 @@ class App extends Component {
 //   );
 
 // }
+// higher order component, it's a component raping my component "injecting my component"
+// export default Radium(App);
 
 export default App;
